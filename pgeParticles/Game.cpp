@@ -32,7 +32,9 @@ bool Game::OnUserCreate() {
 		particle.y = random_y;
 		particle.directionX = (direction_x * 2) - 1;
 		particle.directionY = (direction_y * 2) - 1;
-		particle.speed = speed;
+		particle.originalDirectionX = direction_x;
+		particle.originalDirectionY = direction_y;
+		particle.speed = 12.5f;
 		particle.colour.r = rand() % 255;
 		particle.colour.g = rand() % 255;
 		particle.colour.b = rand() % 255;
@@ -70,9 +72,9 @@ bool Game::OnUserUpdate(float fElapsedTime) {
 		if (particle.boosted) {
 			particle.boostTime -= fElapsedTime;
 
-			if (fElapsedTime <= 0.0f) {
+			if (particle.boostTime <= 0.0f) {
 				particle.boosted = false;
-				particle.boostTime = 0.5;
+				particle.boostTime = 0.3f;
 
 				particle.directionX = particle.originalDirectionX;
 				particle.directionY = particle.originalDirectionY;
@@ -84,11 +86,11 @@ bool Game::OnUserUpdate(float fElapsedTime) {
 
 			if (distance <= mouseDrawDistance) {
 				float length = sqrt((diffX * diffX) + (diffY * diffY));
-				float newDirectionX = (diffX / length) * (2.0f);
-				float newDirectionY = (diffY / length) * (2.0f);
+				float newDirectionX = (diffX / length) * (4.0f * (mouseDrawDistance / distance));
+				float newDirectionY = (diffY / length) * (4.0f * (mouseDrawDistance / distance));
 
-				particle.originalDirectionX = particle.directionX;
-				particle.originalDirectionY = particle.directionY;
+				/*particle.originalDirectionX = particle.directionX;
+				particle.originalDirectionY = particle.directionY;*/
 
 				particle.directionX = newDirectionX;
 				particle.directionY = newDirectionY;
@@ -102,17 +104,29 @@ bool Game::OnUserUpdate(float fElapsedTime) {
 		if (nextX <= 0) {
 			nextX = 0;
 			particle.directionX = -particle.directionX;
+			if (particle.boosted) {
+				particle.directionX = -particle.originalDirectionX;
+			}
 		} else if (nextX >= ScreenWidth()) {
 			nextX = ScreenWidth();
 			particle.directionX = -particle.directionX;
+			if (particle.boosted) {
+				particle.directionX = -particle.originalDirectionX;
+			}
 		}
 
 		if (nextY <= 0) {
 			nextY = 0;
 			particle.directionY = -particle.directionY;
+			if (particle.boosted) {
+				particle.directionX = -particle.originalDirectionY;
+			}
 		} else if (nextY >= ScreenHeight()) {
 			nextY = ScreenHeight();
 			particle.directionY = -particle.directionY;
+			if (particle.boosted) {
+				particle.directionX = -particle.originalDirectionY;
+			}
 		}
 
 		particle.x = nextX;

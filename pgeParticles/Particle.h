@@ -13,7 +13,7 @@ public:
 	float directionX, directionY;
 	float originalDirectionX, originalDirectionY;
 	bool boosted = false;
-	float boostTime = 0.5;
+	float boostTime = 0.3f;
 	Colour colour;
 };
 
